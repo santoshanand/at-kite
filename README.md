@@ -1,6 +1,6 @@
 # The Kite Connect API Go client
 
-NOTE: All code taken from github.com/zerodha/gokiteconnect
+NOTE: All code taken from [github.com/zerodha/gokiteconnect]
 The NON official Go client for communicating with the Kite Connect API.
 
 Kite Connect is a set of REST-like APIs that expose many capabilities required
