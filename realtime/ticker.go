@@ -291,7 +291,6 @@ func (t *Ticker) ServeWithContext(ctx context.Context) {
 			d := websocket.DefaultDialer
 			d.HandshakeTimeout = t.connectTimeout
 			url := t.url.String()
-			fmt.Println(url)
 			conn, _, err := d.Dial(url, nil)
 			if err != nil {
 				t.triggerError(err)
