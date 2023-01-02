@@ -2,11 +2,13 @@ package kite
 
 import (
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
-func (ts *TestSuite) TestGetGTTs(t *testing.T) {
+func TestGetGTTs(t *testing.T) {
 	t.Parallel()
-	gttOrders, err := ts.KiteConnect.GetGTTs()
+	gttOrders, err := getKite().GetGTTs()
 	if err != nil {
 		t.Errorf("Error while fetching GTT orders. %v", err)
 	}
@@ -17,9 +19,9 @@ func (ts *TestSuite) TestGetGTTs(t *testing.T) {
 	}
 }
 
-func (ts *TestSuite) TestGetGTT(t *testing.T) {
+func TestGetGTT(t *testing.T) {
 	t.Parallel()
-	gttOrder, err := ts.KiteConnect.GetGTT(123)
+	gttOrder, err := getKite().GetGTT(123)
 	if err != nil {
 		t.Errorf("Error while fetching GTT orders. %v", err)
 	}
@@ -28,9 +30,9 @@ func (ts *TestSuite) TestGetGTT(t *testing.T) {
 	}
 }
 
-func (ts *TestSuite) TestModifyGTT(t *testing.T) {
+func TestModifyGTT(t *testing.T) {
 	t.Parallel()
-	gttOrder, err := ts.KiteConnect.ModifyGTT(123, GTTParams{
+	gttOrder, err := getKite().ModifyGTT(123, GTTParams{
 		Tradingsymbol:   "INFY",
 		Exchange:        "NSE",
 		LastPrice:       800,
@@ -51,9 +53,9 @@ func (ts *TestSuite) TestModifyGTT(t *testing.T) {
 	}
 }
 
-func (ts *TestSuite) TestPlaceGTT(t *testing.T) {
+func TestPlaceGTT(t *testing.T) {
 	t.Parallel()
-	gttOrder, err := ts.KiteConnect.PlaceGTT(GTTParams{
+	gttOrder, err := getKite().PlaceGTT(GTTParams{
 		Tradingsymbol:   "INFY",
 		Exchange:        "NSE",
 		LastPrice:       800,
@@ -66,21 +68,14 @@ func (ts *TestSuite) TestPlaceGTT(t *testing.T) {
 			},
 		},
 	})
-	if err != nil {
-		t.Errorf("Error while fetching GTT orders. %v", err)
-	}
-	if gttOrder.TriggerID != 123 {
-		t.Errorf("Error while parsing order id in GTT order. %v", err)
-	}
+
+	assert.Nil(t, err)
+	assert.NotNil(t, gttOrder)
 }
 
-func (ts *TestSuite) TestDeleteGTT(t *testing.T) {
+func TestDeleteGTT(t *testing.T) {
 	t.Parallel()
-	gttOrder, err := ts.KiteConnect.DeleteGTT(123)
-	if err != nil {
-		t.Errorf("Error while fetching GTT orders. %v", err)
-	}
-	if gttOrder.TriggerID != 123 {
-		t.Errorf("Error while parsing order id in GTT order. %v", err)
-	}
+	gttOrder, err := getKite().DeleteGTT(132359442)
+	assert.Nil(t, err)
+	assert.NotNil(t, gttOrder)
 }

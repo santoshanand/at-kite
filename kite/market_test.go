@@ -7,9 +7,9 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func (ts *TestSuite) TestGetQuote(t *testing.T) {
+func TestGetQuote(t *testing.T) {
 	t.Parallel()
-	marketQuote, err := ts.KiteConnect.GetQuote()
+	marketQuote, err := getKite().GetQuote()
 	if err != nil {
 		t.Errorf("Error while fetching MF orders. %v", err)
 	}
@@ -23,9 +23,9 @@ func (ts *TestSuite) TestGetQuote(t *testing.T) {
 	}
 }
 
-func (ts *TestSuite) TestGetLTP(t *testing.T) {
+func TestGetLTP(t *testing.T) {
 	t.Parallel()
-	marketLTP, err := ts.KiteConnect.GetLTP()
+	marketLTP, err := getKite().GetLTP()
 	if err != nil {
 		t.Errorf("Error while fetching MF orders. %v", err)
 	}
@@ -39,9 +39,9 @@ func (ts *TestSuite) TestGetLTP(t *testing.T) {
 	}
 }
 
-func (ts *TestSuite) TestGetHistoricalData(t *testing.T) {
+func TestGetHistoricalData(t *testing.T) {
 	t.Parallel()
-	marketHistorical, err := ts.KiteConnect.GetHistoricalData(123, "myinterval", time.Unix(0, 0), time.Unix(1, 0), true, false)
+	marketHistorical, err := getKite().GetHistoricalData(123, "myinterval", time.Unix(0, 0), time.Unix(1, 0), true, false)
 	if err != nil {
 		t.Errorf("Error while fetching MF orders. %v", err)
 	}
@@ -54,9 +54,9 @@ func (ts *TestSuite) TestGetHistoricalData(t *testing.T) {
 	}
 }
 
-func (ts *TestSuite) TestGetHistoricalDataWithOI(t *testing.T) {
+func TestGetHistoricalDataWithOI(t *testing.T) {
 	t.Parallel()
-	marketHistorical, err := ts.KiteConnect.GetHistoricalData(456, "myinterval", time.Unix(0, 0), time.Unix(1, 0), true, true)
+	marketHistorical, err := getKite().GetHistoricalData(456, "myinterval", time.Unix(0, 0), time.Unix(1, 0), true, true)
 	require.Nil(t, err)
 	require.Equal(t, 6, len(marketHistorical))
 
@@ -66,9 +66,9 @@ func (ts *TestSuite) TestGetHistoricalDataWithOI(t *testing.T) {
 	}
 }
 
-func (ts *TestSuite) TestGetOHLC(t *testing.T) {
+func TestGetOHLC(t *testing.T) {
 	t.Parallel()
-	marketOHLC, err := ts.KiteConnect.GetOHLC()
+	marketOHLC, err := getKite().GetOHLC()
 	if err != nil {
 		t.Errorf("Error while fetching MF orders. %v", err)
 	}
@@ -82,9 +82,9 @@ func (ts *TestSuite) TestGetOHLC(t *testing.T) {
 	}
 }
 
-func (ts *TestSuite) TestGetInstruments(t *testing.T) {
+func TestGetInstruments(t *testing.T) {
 	t.Parallel()
-	marketInstruments, err := ts.KiteConnect.GetInstruments()
+	marketInstruments, err := getKite().GetInstruments()
 	if err != nil {
 		t.Errorf("Error while fetching MF orders. %v", err)
 	}
@@ -102,9 +102,9 @@ func (ts *TestSuite) TestGetInstruments(t *testing.T) {
 	}
 }
 
-func (ts *TestSuite) TestGetInstrumentsByExchange(t *testing.T) {
+func TestGetInstrumentsByExchange(t *testing.T) {
 	t.Parallel()
-	marketInstruments, err := ts.KiteConnect.GetInstrumentsByExchange("nse")
+	marketInstruments, err := getKite().GetInstrumentsByExchange("nse")
 	if err != nil {
 		t.Errorf("Error while fetching MF orders. %v", err)
 	}
@@ -116,9 +116,9 @@ func (ts *TestSuite) TestGetInstrumentsByExchange(t *testing.T) {
 	}
 }
 
-func (ts *TestSuite) TestGetMFInstruments(t *testing.T) {
+func TestGetMFInstruments(t *testing.T) {
 	t.Parallel()
-	marketInstruments, err := ts.KiteConnect.GetMFInstruments()
+	marketInstruments, err := getKite().GetMFInstruments()
 	if err != nil {
 		t.Errorf("Error while fetching MF orders. %v", err)
 	}

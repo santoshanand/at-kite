@@ -4,9 +4,9 @@ import (
 	"testing"
 )
 
-func (ts *TestSuite) TestGetMFOrders(t *testing.T) {
+func TestGetMFOrders(t *testing.T) {
 	t.Parallel()
-	mfOrders, err := ts.KiteConnect.GetMFOrders()
+	mfOrders, err := getKite().GetMFOrders()
 	if err != nil {
 		t.Errorf("Error while fetching MF orders. %v", err)
 	}
@@ -17,9 +17,9 @@ func (ts *TestSuite) TestGetMFOrders(t *testing.T) {
 	}
 }
 
-func (ts *TestSuite) TestGetMFOrderInfo(t *testing.T) {
+func TestGetMFOrderInfo(t *testing.T) {
 	t.Parallel()
-	orderInfo, err := ts.KiteConnect.GetMFOrderInfo("test")
+	orderInfo, err := getKite().GetMFOrderInfo("test")
 	if err != nil {
 		t.Errorf("Error while fetching trades. %v", err)
 	}
@@ -28,7 +28,7 @@ func (ts *TestSuite) TestGetMFOrderInfo(t *testing.T) {
 	}
 }
 
-func (ts *TestSuite) TestPlaceMFOrder(t *testing.T) {
+func TestPlaceMFOrder(t *testing.T) {
 	t.Parallel()
 	params := MFOrderParams{
 		Tradingsymbol:   "test",
@@ -37,7 +37,7 @@ func (ts *TestSuite) TestPlaceMFOrder(t *testing.T) {
 		Amount:          100,
 		Tag:             "test",
 	}
-	orderResponse, err := ts.KiteConnect.PlaceMFOrder(params)
+	orderResponse, err := getKite().PlaceMFOrder(params)
 	if err != nil {
 		t.Errorf("Error while placing MF order. %v", err)
 	}
@@ -46,9 +46,9 @@ func (ts *TestSuite) TestPlaceMFOrder(t *testing.T) {
 	}
 }
 
-func (ts *TestSuite) TestGetMFSIPs(t *testing.T) {
+func TestGetMFSIPs(t *testing.T) {
 	t.Parallel()
-	sips, err := ts.KiteConnect.GetMFSIPs()
+	sips, err := getKite().GetMFSIPs()
 	if err != nil {
 		t.Errorf("Error while fetching MF SIPs. %v", err)
 	}
@@ -59,15 +59,15 @@ func (ts *TestSuite) TestGetMFSIPs(t *testing.T) {
 	}
 }
 
-func (ts *TestSuite) TestGetMFSIPInfo(t *testing.T) {
+func TestGetMFSIPInfo(t *testing.T) {
 	t.Parallel()
-	sip, err := ts.KiteConnect.GetMFSIPInfo("test")
+	sip, err := getKite().GetMFSIPInfo("test")
 	if err != nil || sip.ID == "" {
 		t.Errorf("Error while fetching MF SIP Info. %v", err)
 	}
 }
 
-func (ts *TestSuite) TestPlaceMFSIP(t *testing.T) {
+func TestPlaceMFSIP(t *testing.T) {
 	t.Parallel()
 	params := MFSIPParams{
 		Tradingsymbol: "test",
@@ -78,7 +78,7 @@ func (ts *TestSuite) TestPlaceMFSIP(t *testing.T) {
 		InitialAmount: 2000,
 		Tag:           "test",
 	}
-	sipResponse, err := ts.KiteConnect.PlaceMFSIP(params)
+	sipResponse, err := getKite().PlaceMFSIP(params)
 	if err != nil {
 		t.Errorf("Error while placing MF SIP order. %v", err)
 	}
@@ -87,7 +87,7 @@ func (ts *TestSuite) TestPlaceMFSIP(t *testing.T) {
 	}
 }
 
-func (ts *TestSuite) TestModifyMFSIP(t *testing.T) {
+func TestModifyMFSIP(t *testing.T) {
 	t.Parallel()
 	params := MFSIPModifyParams{
 		Amount:        100,
@@ -96,7 +96,7 @@ func (ts *TestSuite) TestModifyMFSIP(t *testing.T) {
 		Instalments:   100,
 		Status:        "test",
 	}
-	sipResponse, err := ts.KiteConnect.ModifyMFSIP("test", params)
+	sipResponse, err := getKite().ModifyMFSIP("test", params)
 	if err != nil {
 		t.Errorf("Error while modifying MF SIP order. %v", err)
 	}
@@ -105,9 +105,9 @@ func (ts *TestSuite) TestModifyMFSIP(t *testing.T) {
 	}
 }
 
-func (ts *TestSuite) TestCancelMFSIP(t *testing.T) {
+func TestCancelMFSIP(t *testing.T) {
 	t.Parallel()
-	sipResponse, err := ts.KiteConnect.CancelMFSIP("test")
+	sipResponse, err := getKite().CancelMFSIP("test")
 	if err != nil {
 		t.Errorf("Error while cancelling MF SIP order. %v", err)
 	}
@@ -116,9 +116,9 @@ func (ts *TestSuite) TestCancelMFSIP(t *testing.T) {
 	}
 }
 
-func (ts *TestSuite) TestGetMFHoldings(t *testing.T) {
+func TestGetMFHoldings(t *testing.T) {
 	t.Parallel()
-	holdings, err := ts.KiteConnect.GetMFHoldings()
+	holdings, err := getKite().GetMFHoldings()
 	if err != nil {
 		t.Errorf("Error while fetching MF orders. %v", err)
 	}

@@ -2,7 +2,7 @@ package kite
 
 import "testing"
 
-func (ts *TestSuite) TestGetOrderMargins(t *testing.T) {
+func TestGetOrderMargins(t *testing.T) {
 	t.Parallel()
 
 	params := OrderMarginParam{
@@ -17,7 +17,7 @@ func (ts *TestSuite) TestGetOrderMargins(t *testing.T) {
 		TriggerPrice:    0,
 	}
 
-	orderResponse, err := ts.KiteConnect.GetOrderMargins(GetMarginParams{
+	orderResponse, err := getKite().GetOrderMargins(GetMarginParams{
 		OrderParams: []OrderMarginParam{params},
 		Compact:     true,
 	})
@@ -34,7 +34,7 @@ func (ts *TestSuite) TestGetOrderMargins(t *testing.T) {
 	}
 }
 
-func (ts *TestSuite) TestGetBasketMargins(t *testing.T) {
+func TestGetBasketMargins(t *testing.T) {
 	t.Parallel()
 
 	params := OrderMarginParam{
@@ -49,7 +49,7 @@ func (ts *TestSuite) TestGetBasketMargins(t *testing.T) {
 		TriggerPrice:    0,
 	}
 
-	orderResponseBasket, err := ts.KiteConnect.GetBasketMargins(GetBasketParams{
+	orderResponseBasket, err := getKite().GetBasketMargins(GetBasketParams{
 		OrderParams:       []OrderMarginParam{params},
 		Compact:           true,
 		ConsiderPositions: true,

@@ -4,9 +4,9 @@ import (
 	"testing"
 )
 
-func (ts *TestSuite) TestGetPositions(t *testing.T) {
+func TestGetPositions(t *testing.T) {
 	t.Parallel()
-	positions, err := ts.KiteConnect.GetPositions()
+	positions, err := getKite().GetPositions()
 	if err != nil {
 		t.Errorf("Error while fetching positions. %v", err)
 	}
@@ -28,9 +28,9 @@ func (ts *TestSuite) TestGetPositions(t *testing.T) {
 	}
 }
 
-func (ts *TestSuite) TestGetHoldings(t *testing.T) {
+func TestGetHoldings(t *testing.T) {
 	t.Parallel()
-	holdings, err := ts.KiteConnect.GetHoldings()
+	holdings, err := getKite().GetHoldings()
 	if err != nil {
 		t.Errorf("Error while fetching holdings. %v", err)
 	}
@@ -41,7 +41,7 @@ func (ts *TestSuite) TestGetHoldings(t *testing.T) {
 	}
 }
 
-func (ts *TestSuite) TestConvertPosition(t *testing.T) {
+func TestConvertPosition(t *testing.T) {
 	t.Parallel()
 	params := ConvertPositionParams{
 		Exchange:        "test",
@@ -52,7 +52,7 @@ func (ts *TestSuite) TestConvertPosition(t *testing.T) {
 		TransactionType: "test",
 		Quantity:        1,
 	}
-	response, err := ts.KiteConnect.ConvertPosition(params)
+	response, err := getKite().ConvertPosition(params)
 	if err != nil || response != true {
 		t.Errorf("Error while converting position. %v", err)
 	}

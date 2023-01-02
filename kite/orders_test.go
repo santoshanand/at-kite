@@ -7,9 +7,9 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func (ts *TestSuite) TestGetOrders(t *testing.T) {
+func TestGetOrders(t *testing.T) {
 	t.Parallel()
-	orders, err := ts.KiteConnect.GetOrders()
+	orders, err := getKite().GetOrders()
 	if err != nil {
 		t.Errorf("Error while fetching orders. %v", err)
 	}
@@ -31,9 +31,9 @@ func (ts *TestSuite) TestGetOrders(t *testing.T) {
 	})
 }
 
-func (ts *TestSuite) TestGetTrades(t *testing.T) {
+func TestGetTrades(t *testing.T) {
 	t.Parallel()
-	trades, err := ts.KiteConnect.GetTrades()
+	trades, err := getKite().GetTrades()
 	if err != nil {
 		t.Errorf("Error while fetching trades. %v", err)
 	}
@@ -44,9 +44,9 @@ func (ts *TestSuite) TestGetTrades(t *testing.T) {
 	}
 }
 
-func (ts *TestSuite) TestGetOrderHistory(t *testing.T) {
+func TestGetOrderHistory(t *testing.T) {
 	t.Parallel()
-	orderHistory, err := ts.KiteConnect.GetOrderHistory("test")
+	orderHistory, err := getKite().GetOrderHistory("test")
 	if err != nil {
 		t.Errorf("Error while fetching trades. %v", err)
 	}
@@ -57,9 +57,9 @@ func (ts *TestSuite) TestGetOrderHistory(t *testing.T) {
 	}
 }
 
-func (ts *TestSuite) TestGetOrderTrades(t *testing.T) {
+func TestGetOrderTrades(t *testing.T) {
 	t.Parallel()
-	tradeHistory, err := ts.KiteConnect.GetOrderTrades("test")
+	tradeHistory, err := getKite().GetOrderTrades("test")
 	if err != nil {
 		t.Errorf("Error while fetching trades. %v", err)
 	}
@@ -70,7 +70,7 @@ func (ts *TestSuite) TestGetOrderTrades(t *testing.T) {
 	}
 }
 
-func (ts *TestSuite) TestPlaceOrder(t *testing.T) {
+func TestPlaceOrder(t *testing.T) {
 	t.Parallel()
 	params := OrderParams{
 		Exchange:          "test",
@@ -88,7 +88,7 @@ func (ts *TestSuite) TestPlaceOrder(t *testing.T) {
 		TrailingStoploss:  100,
 		Tag:               "test",
 	}
-	orderResponse, err := ts.KiteConnect.PlaceOrder("test", params)
+	orderResponse, err := getKite().PlaceOrder("test", params)
 	if err != nil {
 		t.Errorf("Error while placing order. %v", err)
 	}
@@ -97,7 +97,7 @@ func (ts *TestSuite) TestPlaceOrder(t *testing.T) {
 	}
 }
 
-func (ts *TestSuite) TestModifyOrder(t *testing.T) {
+func TestModifyOrder(t *testing.T) {
 	t.Parallel()
 	params := OrderParams{
 		Exchange:          "test",
@@ -115,7 +115,7 @@ func (ts *TestSuite) TestModifyOrder(t *testing.T) {
 		TrailingStoploss:  100,
 		Tag:               "test",
 	}
-	orderResponse, err := ts.KiteConnect.ModifyOrder("test", "test", params)
+	orderResponse, err := getKite().ModifyOrder("test", "test", params)
 	if err != nil {
 		t.Errorf("Error while placing order. %v", err)
 	}
@@ -124,21 +124,21 @@ func (ts *TestSuite) TestModifyOrder(t *testing.T) {
 	}
 }
 
-func (ts *TestSuite) TestCancelOrder(t *testing.T) {
+func TestCancelOrder(t *testing.T) {
 	t.Parallel()
 	parentOrderID := "test"
 
-	orderResponse, err := ts.KiteConnect.CancelOrder("test", "test", &parentOrderID)
+	orderResponse, err := getKite().CancelOrder("test", "test", &parentOrderID)
 	if err != nil || orderResponse.OrderID == "" {
 		t.Errorf("Error while placing cancel order. %v", err)
 	}
 }
 
-func (ts *TestSuite) TestExitOrder(t *testing.T) {
+func TestExitOrder(t *testing.T) {
 	t.Parallel()
 	parentOrderID := "test"
 
-	orderResponse, err := ts.KiteConnect.ExitOrder("test", "test", &parentOrderID)
+	orderResponse, err := getKite().ExitOrder("test", "test", &parentOrderID)
 	if err != nil {
 		t.Errorf("Error while placing order. %v", err)
 	}
@@ -147,9 +147,9 @@ func (ts *TestSuite) TestExitOrder(t *testing.T) {
 	}
 }
 
-func (ts *TestSuite) TestIssue64(t *testing.T) {
+func TestIssue64(t *testing.T) {
 	t.Parallel()
-	orders, err := ts.KiteConnect.GetOrders()
+	orders, err := getKite().GetOrders()
 	if err != nil {
 		t.Errorf("Error while fetching orders. %v", err)
 	}
