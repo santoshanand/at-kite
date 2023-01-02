@@ -292,8 +292,7 @@ func (t *Ticker) ServeWithContext(ctx context.Context) {
 			d.HandshakeTimeout = t.connectTimeout
 			url := t.url.String()
 			fmt.Println(url)
-			conn, ss, err := d.Dial(url, nil)
-			fmt.Println("ss", ss)
+			conn, _, err := d.Dial(url, nil)
 			if err != nil {
 				t.triggerError(err)
 
