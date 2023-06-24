@@ -31,6 +31,30 @@ func TestGetOrders(t *testing.T) {
 	})
 }
 
+func TestGetOrdersOMS(t *testing.T) {
+	t.Parallel()
+	orders, err := getKite().GetOrdersOms()
+	if err != nil {
+		t.Errorf("Error while fetching orders. %v", err)
+	}
+	t.Run("test empty/unparsed orders", func(t *testing.T) {
+		for _, order := range orders {
+			require.NotEqual(t, "", order.OrderID)
+		}
+	})
+	t.Run("test tag parsing", func(t *testing.T) {
+		require.Equal(t, "", orders[0].Tag)
+		require.Equal(t, "connect test order1", orders[1].Tag)
+		require.Equal(t, []string{"connect test order2", "XXXXX"}, orders[2].Tags)
+	})
+	t.Run("test ice-berg and TTL orders", func(t *testing.T) {
+		require.Equal(t, "iceberg", orders[3].Variety)
+		require.Equal(t, "TTL", orders[3].Validity)
+		require.Equal(t, 200.0, orders[3].Meta["iceberg"].(map[string]interface{})["leg_quantity"])
+		require.Equal(t, 1000.0, orders[3].Meta["iceberg"].(map[string]interface{})["total_quantity"])
+	})
+}
+
 func TestGetTrades(t *testing.T) {
 	t.Parallel()
 	trades, err := getKite().GetTrades()

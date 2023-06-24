@@ -108,6 +108,13 @@ func (c *Client) GetOrders() (Orders, error) {
 	return orders, err
 }
 
+// GetOrdersOms - get oms orders
+func (c *Client) GetOrdersOms() (Orders, error) {
+	var orders Orders
+	err := c.doEnvelope(http.MethodGet, URIGetOMSOrders, nil, nil, &orders)
+	return orders, err
+}
+
 // GetTrades gets list of trades.
 func (c *Client) GetTrades() (Trades, error) {
 	var trades Trades

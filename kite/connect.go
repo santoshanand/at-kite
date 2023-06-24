@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"strings"
 	"time"
 )
 
@@ -96,6 +97,7 @@ const (
 	URIUserMarginsSegment    string = "/user/margins/%s" // "/user/margins/{segment}"
 
 	URIGetOrders       string = "/orders"
+	URIGetOMSOrders    string = "/oms/orders"
 	URIGetTrades       string = "/trades"
 	URIGetOrderHistory string = "/orders/%s"        // "/orders/{order_id}"
 	URIGetOrderTrades  string = "/orders/%s/trades" // "/orders/{order_id}/trades"
@@ -203,6 +205,10 @@ func (c *Client) doEnvelope(method, uri string, params url.Values, headers http.
 	if c.accessToken != "" {
 		authHeader := fmt.Sprintf("enctoken %s", c.accessToken)
 		headers.Add("Authorization", authHeader)
+	}
+
+	if strings.Contains(uri, "oms") {
+		c.baseURI = kiteBaseURI
 	}
 
 	return c.httpClient.DoEnvelope(method, c.baseURI+uri, params, headers, v)
