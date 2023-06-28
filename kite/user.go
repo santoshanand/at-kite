@@ -106,6 +106,13 @@ func (c *Client) GetUserMargins() (AllMargins, error) {
 	return allUserMargins, err
 }
 
+// GetUserMarginsOMS gets all user margins.
+func (c *Client) GetUserMarginsOMS() (AllMargins, error) {
+	var allUserMargins AllMargins
+	err := c.doEnvelope(http.MethodGet, URIUserMarginsOMS, nil, nil, &allUserMargins)
+	return allUserMargins, err
+}
+
 // GetUserSegmentMargins gets segmentwise user margins.
 func (c *Client) GetUserSegmentMargins(segment string) (Margins, error) {
 	var margins Margins

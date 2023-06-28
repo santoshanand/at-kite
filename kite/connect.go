@@ -94,6 +94,7 @@ const (
 	URIUserSessionRenew      string = "/session/refresh_token"
 	URIUserProfile           string = "/user/profile"
 	URIUserMargins           string = "/user/margins"
+	URIUserMarginsOMS        string = "/oms/user/margins"
 	URIUserMarginsSegment    string = "/user/margins/%s" // "/user/margins/{segment}"
 
 	URIGetOrders       string = "/orders"
