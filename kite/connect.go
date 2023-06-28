@@ -107,6 +107,7 @@ const (
 	URICancelOrder     string = "/orders/%s/%s"     // "/orders/{variety}/{order_id}"
 
 	URIGetPositions     string = "/portfolio/positions"
+	URIGetPositionsOMS  string = "/oms/portfolio/positions"
 	URIGetHoldings      string = "/portfolio/holdings"
 	URIInitHoldingsAuth string = "/portfolio/holdings/authorise"
 	URIConvertPosition  string = "/portfolio/positions"

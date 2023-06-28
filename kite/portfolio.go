@@ -110,6 +110,13 @@ func (c *Client) GetPositions() (Positions, error) {
 	return positions, err
 }
 
+// GetPositionsOMS gets user positions.
+func (c *Client) GetPositionsOMS() (Positions, error) {
+	var positions Positions
+	err := c.doEnvelope(http.MethodGet, URIGetPositionsOMS, nil, nil, &positions)
+	return positions, err
+}
+
 // ConvertPosition converts postion's product type.
 func (c *Client) ConvertPosition(positionParams ConvertPositionParams) (bool, error) {
 	var (
