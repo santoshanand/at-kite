@@ -200,6 +200,27 @@ func (c *Client) GetOHLC(instruments ...string) (QuoteOHLC, error) {
 	return quotes, err
 }
 
+// GetOHLCOMS gets map of OHLC quotes for given instruments in the format of `exchange:tradingsymbol`.
+func (c *Client) GetOHLCOMS(instruments ...string) (QuoteOHLC, error) {
+	var (
+		err     error
+		quotes  QuoteOHLC
+		params  url.Values
+		qParams quoteParams
+	)
+
+	qParams = quoteParams{
+		Instruments: instruments,
+	}
+
+	if params, err = query.Values(qParams); err != nil {
+		return quotes, NewError(InputError, fmt.Sprintf("Error decoding order params: %v", err), nil)
+	}
+
+	err = c.doEnvelope(http.MethodGet, URIGetQuoteOMS, params, nil, &quotes)
+	return quotes, err
+}
+
 func (c *Client) formatHistoricalData(inp historicalDataReceived) ([]HistoricalData, error) {
 	var data []HistoricalData
 
