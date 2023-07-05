@@ -154,7 +154,7 @@ func (c *Client) GetQuoteOMS(instruments ...string) (Quote, error) {
 		return quotes, NewError(InputError, fmt.Sprintf("Error decoding order params: %v", err), nil)
 	}
 
-	err = c.doEnvelope(http.MethodGet, URIGetQuote, params, nil, &quotes)
+	err = c.doEnvelope(http.MethodGet, URIGetQuoteOMS, params, nil, &quotes)
 	return quotes, err
 }
 
