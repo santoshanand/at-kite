@@ -112,8 +112,9 @@ const (
 	URIInitHoldingsAuth string = "/portfolio/holdings/authorise"
 	URIConvertPosition  string = "/portfolio/positions"
 
-	URIOrderMargins  string = "/margins/orders"
-	URIBasketMargins string = "/margins/basket"
+	URIOrderMargins    string = "/margins/orders"
+	URIOrderMarginsOMS string = "/oms/margins/orders"
+	URIBasketMargins   string = "/margins/basket"
 
 	// MF endpoints
 	URIGetMFOrders      string = "/mf/orders"
@@ -233,7 +234,9 @@ func (c *Client) do(method, uri string, params url.Values, headers http.Header) 
 		authHeader := fmt.Sprintf("enctoken %s", c.accessToken)
 		headers.Add("Authorization", authHeader)
 	}
-
+	if strings.Contains(uri, "oms") {
+		c.baseURI = kiteBaseURI
+	}
 	return c.httpClient.Do(method, c.baseURI+uri, params, headers)
 }
 
@@ -249,6 +252,8 @@ func (c *Client) doRaw(method, uri string, reqBody []byte, headers http.Header) 
 		authHeader := fmt.Sprintf("enctoken %s", c.accessToken)
 		headers.Add("Authorization", authHeader)
 	}
-
+	if strings.Contains(uri, "oms") {
+		c.baseURI = kiteBaseURI
+	}
 	return c.httpClient.DoRaw(method, c.baseURI+uri, reqBody, headers)
 }

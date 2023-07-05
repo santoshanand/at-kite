@@ -25,7 +25,7 @@ type PNL struct {
 	Unrealised float64 `json:"unrealised"`
 }
 
-// OrdersMargins represents response from the Margin Calculator API.
+// OrderMargins - represents response from the Margin Calculator API.
 type OrderMargins struct {
 	Type          string `json:"type"`
 	TradingSymbol string `json:"tradingsymbol"`
@@ -49,17 +49,20 @@ type BasketMargins struct {
 	Orders  []OrderMargins `json:"orders"`
 }
 
+// GetMarginParams -
 type GetMarginParams struct {
 	OrderParams []OrderMarginParam
 	Compact     bool
 }
 
+// GetBasketParams -
 type GetBasketParams struct {
 	OrderParams       []OrderMarginParam
 	Compact           bool
 	ConsiderPositions bool
 }
 
+// GetOrderMargins -
 func (c *Client) GetOrderMargins(marparam GetMarginParams) ([]OrderMargins, error) {
 	body, err := json.Marshal(marparam.OrderParams)
 	if err != nil {
@@ -87,6 +90,35 @@ func (c *Client) GetOrderMargins(marparam GetMarginParams) ([]OrderMargins, erro
 	return out, nil
 }
 
+// GetOrderMarginsOMS - get margin orders
+func (c *Client) GetOrderMarginsOMS(marparam GetMarginParams) ([]OrderMargins, error) {
+	body, err := json.Marshal(marparam.OrderParams)
+	if err != nil {
+		return []OrderMargins{}, err
+	}
+
+	var headers http.Header = map[string][]string{}
+	headers.Add("Content-Type", "application/json")
+
+	uri := URIOrderMarginsOMS
+	if marparam.Compact {
+		uri += "?mode=compact"
+	}
+
+	resp, err := c.doRaw(http.MethodPost, uri, body, headers)
+	if err != nil {
+		return []OrderMargins{}, err
+	}
+
+	var out []OrderMargins
+	if err := readEnvelope(resp, &out); err != nil {
+		return []OrderMargins{}, err
+	}
+
+	return out, nil
+}
+
+// GetBasketMargins -
 func (c *Client) GetBasketMargins(baskparam GetBasketParams) (BasketMargins, error) {
 	body, err := json.Marshal(baskparam.OrderParams)
 	if err != nil {
