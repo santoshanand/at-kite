@@ -137,6 +137,27 @@ func (c *Client) GetQuote(instruments ...string) (Quote, error) {
 	return quotes, err
 }
 
+// GetQuoteOMS gets map of quotes for given instruments in the format of `exchange:tradingsymbol`.
+func (c *Client) GetQuoteOMS(instruments ...string) (Quote, error) {
+	var (
+		err     error
+		quotes  Quote
+		params  url.Values
+		qParams quoteParams
+	)
+
+	qParams = quoteParams{
+		Instruments: instruments,
+	}
+
+	if params, err = query.Values(qParams); err != nil {
+		return quotes, NewError(InputError, fmt.Sprintf("Error decoding order params: %v", err), nil)
+	}
+
+	err = c.doEnvelope(http.MethodGet, URIGetQuote, params, nil, &quotes)
+	return quotes, err
+}
+
 // GetLTP gets map of LTP quotes for given instruments in the format of `exchange:tradingsymbol`.
 func (c *Client) GetLTP(instruments ...string) (QuoteLTP, error) {
 	var (

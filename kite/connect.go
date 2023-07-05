@@ -142,9 +142,10 @@ const (
 	URIGetHistorical          string = "/instruments/historical/%d/%s"    // "/instruments/historical/{instrument_token}/{interval}"
 	URIGetTriggerRange        string = "/instruments/%s/%s/trigger_range" // "/instruments/{exchange}/{tradingsymbol}/trigger_range"
 
-	URIGetQuote string = "/quote"
-	URIGetLTP   string = "/quote/ltp"
-	URIGetOHLC  string = "/quote/ohlc"
+	URIGetQuote    string = "/quote"
+	URIGetQuoteOMS string = "/oms/quote"
+	URIGetLTP      string = "/quote/ltp"
+	URIGetOHLC     string = "/quote/ohlc"
 )
 
 // New creates a new Kite Connect client.
