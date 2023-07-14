@@ -1,4 +1,4 @@
-package models
+package kite
 
 // OHLC represents OHLC packets.
 type OHLC struct {

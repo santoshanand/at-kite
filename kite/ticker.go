@@ -1,4 +1,4 @@
-package realtime
+package kite
 
 import (
 	"context"
@@ -11,8 +11,6 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
-	"github.com/santoshanand/at-kite/kite"
-	"github.com/santoshanand/at-kite/models"
 )
 
 // Mode represents available ticker modes.
@@ -42,14 +40,14 @@ type Ticker struct {
 
 // callbacks represents callbacks available in ticker.
 type callbacks struct {
-	onTick        func(models.Tick)
+	onTick        func(Tick)
 	onMessage     func(int, []byte)
 	onNoReconnect func(int)
 	onReconnect   func(int, time.Duration)
 	onConnect     func()
 	onClose       func(int, string)
 	onError       func(error)
-	onOrderUpdate func(kite.Order)
+	onOrderUpdate func(Order)
 }
 
 type tickerInput struct {
@@ -145,7 +143,7 @@ var (
 )
 
 // New creates a new ticker instance.
-func New(accessToken string) *Ticker {
+func NewTicker(accessToken string) *Ticker {
 	apiKey := "kitefront"
 	ticker := &Ticker{
 		apiKey:              apiKey,
@@ -227,12 +225,12 @@ func (t *Ticker) OnNoReconnect(f func(attempt int)) {
 }
 
 // OnTick callback.
-func (t *Ticker) OnTick(f func(tick models.Tick)) {
+func (t *Ticker) OnTick(f func(tick Tick)) {
 	t.callbacks.onTick = f
 }
 
 // OnOrderUpdate callback.
-func (t *Ticker) OnOrderUpdate(f func(order kite.Order)) {
+func (t *Ticker) OnOrderUpdate(f func(order Order)) {
 	t.callbacks.onOrderUpdate = f
 }
 
@@ -389,13 +387,13 @@ func (t *Ticker) triggerMessage(messageType int, message []byte) {
 	}
 }
 
-func (t *Ticker) triggerTick(tick models.Tick) {
+func (t *Ticker) triggerTick(tick Tick) {
 	if t.callbacks.onTick != nil {
 		t.callbacks.onTick(tick)
 	}
 }
 
-func (t *Ticker) triggerOrderUpdate(order kite.Order) {
+func (t *Ticker) triggerOrderUpdate(order Order) {
 	if t.callbacks.onOrderUpdate != nil {
 		t.callbacks.onOrderUpdate(order)
 	}
@@ -596,7 +594,7 @@ func (t *Ticker) processTextMessage(inp []byte) {
 	} else if msg.Type == messageOrder {
 		// Parse order update data
 		order := struct {
-			Data kite.Order `json:"data"`
+			Data Order `json:"data"`
 		}{}
 
 		if err := json.Unmarshal(inp, &order); err != nil {
@@ -609,9 +607,9 @@ func (t *Ticker) processTextMessage(inp []byte) {
 }
 
 // parseBinary parses the packets to ticks.
-func (t *Ticker) parseBinary(inp []byte) ([]models.Tick, error) {
+func (t *Ticker) parseBinary(inp []byte) ([]Tick, error) {
 	pkts := t.splitPackets(inp)
-	var ticks []models.Tick
+	var ticks []Tick
 
 	for _, pkt := range pkts {
 		tick, err := parsePacket(pkt)
@@ -645,7 +643,7 @@ func (t *Ticker) splitPackets(inp []byte) [][]byte {
 }
 
 // Parse parses a tick byte array into a tick struct.
-func parsePacket(b []byte) (models.Tick, error) {
+func parsePacket(b []byte) (Tick, error) {
 	var (
 		tk         = binary.BigEndian.Uint32(b[0:4])
 		seg        = tk & 0xFF
@@ -655,7 +653,7 @@ func parsePacket(b []byte) (models.Tick, error) {
 
 	// Mode LTP parsing
 	if len(b) == modeLTPLength {
-		return models.Tick{
+		return Tick{
 			Mode:            string(ModeLTP),
 			InstrumentToken: tk,
 			IsTradable:      isTradable,
@@ -671,14 +669,14 @@ func parsePacket(b []byte) (models.Tick, error) {
 			closePrice = convertPrice(seg, float64(binary.BigEndian.Uint32(b[20:24])))
 		)
 
-		tick := models.Tick{
+		tick := Tick{
 			Mode:            string(ModeQuote),
 			InstrumentToken: tk,
 			IsTradable:      isTradable,
 			IsIndex:         isIndex,
 			LastPrice:       lastPrice,
 			NetChange:       lastPrice - closePrice,
-			OHLC: models.OHLC{
+			OHLC: OHLC{
 				High:  convertPrice(seg, float64(binary.BigEndian.Uint32(b[8:12]))),
 				Low:   convertPrice(seg, float64(binary.BigEndian.Uint32(b[12:16]))),
 				Open:  convertPrice(seg, float64(binary.BigEndian.Uint32(b[16:20]))),
@@ -688,7 +686,7 @@ func parsePacket(b []byte) (models.Tick, error) {
 		// On mode full set timestamp
 		if len(b) == modeFullIndexLength {
 			tick.Mode = string(ModeFull)
-			tick.Timestamp = models.Time{Time: time.Unix(int64(binary.BigEndian.Uint32(b[28:32])), 0)}
+			tick.Timestamp = Time{Time: time.Unix(int64(binary.BigEndian.Uint32(b[28:32])), 0)}
 		}
 
 		return tick, nil
@@ -701,7 +699,7 @@ func parsePacket(b []byte) (models.Tick, error) {
 	)
 
 	// Mode quote data.
-	tick := models.Tick{
+	tick := Tick{
 		Mode:               string(ModeQuote),
 		InstrumentToken:    tk,
 		IsTradable:         isTradable,
@@ -712,7 +710,7 @@ func parsePacket(b []byte) (models.Tick, error) {
 		VolumeTraded:       binary.BigEndian.Uint32(b[16:20]),
 		TotalBuyQuantity:   binary.BigEndian.Uint32(b[20:24]),
 		TotalSellQuantity:  binary.BigEndian.Uint32(b[24:28]),
-		OHLC: models.OHLC{
+		OHLC: OHLC{
 			Open:  convertPrice(seg, float64(binary.BigEndian.Uint32(b[28:32]))),
 			High:  convertPrice(seg, float64(binary.BigEndian.Uint32(b[32:36]))),
 			Low:   convertPrice(seg, float64(binary.BigEndian.Uint32(b[36:40]))),
@@ -723,11 +721,11 @@ func parsePacket(b []byte) (models.Tick, error) {
 	// Parse full mode.
 	if len(b) == modeFullLength {
 		tick.Mode = string(ModeFull)
-		tick.LastTradeTime = models.Time{Time: time.Unix(int64(binary.BigEndian.Uint32(b[44:48])), 0)}
+		tick.LastTradeTime = Time{Time: time.Unix(int64(binary.BigEndian.Uint32(b[44:48])), 0)}
 		tick.OI = binary.BigEndian.Uint32(b[48:52])
 		tick.OIDayHigh = binary.BigEndian.Uint32(b[52:56])
 		tick.OIDayLow = binary.BigEndian.Uint32(b[56:60])
-		tick.Timestamp = models.Time{Time: time.Unix(int64(binary.BigEndian.Uint32(b[60:64])), 0)}
+		tick.Timestamp = Time{Time: time.Unix(int64(binary.BigEndian.Uint32(b[60:64])), 0)}
 		tick.NetChange = lastPrice - closePrice
 
 		// Depth Information.
@@ -738,13 +736,13 @@ func parsePacket(b []byte) (models.Tick, error) {
 		)
 
 		for i := 0; i < depthItems; i++ {
-			tick.Depth.Buy[i] = models.DepthItem{
+			tick.Depth.Buy[i] = DepthItem{
 				Quantity: binary.BigEndian.Uint32(b[buyPos : buyPos+4]),
 				Price:    convertPrice(seg, float64(binary.BigEndian.Uint32(b[buyPos+4:buyPos+8]))),
 				Orders:   uint32(binary.BigEndian.Uint16(b[buyPos+8 : buyPos+10])),
 			}
 
-			tick.Depth.Sell[i] = models.DepthItem{
+			tick.Depth.Sell[i] = DepthItem{
 				Quantity: binary.BigEndian.Uint32(b[sellPos : sellPos+4]),
 				Price:    convertPrice(seg, float64(binary.BigEndian.Uint32(b[sellPos+4:sellPos+8]))),
 				Orders:   uint32(binary.BigEndian.Uint16(b[sellPos+8 : sellPos+10])),

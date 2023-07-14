@@ -1,12 +1,12 @@
 package kite
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
 
 	"github.com/google/go-querystring/query"
-	"github.com/santoshanand/at-kite/models"
 )
 
 // Order represents a individual order response.
@@ -20,9 +20,9 @@ type Order struct {
 	Status                  string                 `json:"status"`
 	StatusMessage           string                 `json:"status_message"`
 	StatusMessageRaw        string                 `json:"status_message_raw"`
-	OrderTimestamp          models.Time            `json:"order_timestamp"`
-	ExchangeUpdateTimestamp models.Time            `json:"exchange_update_timestamp"`
-	ExchangeTimestamp       models.Time            `json:"exchange_timestamp"`
+	OrderTimestamp          Time                   `json:"order_timestamp"`
+	ExchangeUpdateTimestamp Time                   `json:"exchange_update_timestamp"`
+	ExchangeTimestamp       Time                   `json:"exchange_timestamp"`
 	Variety                 string                 `json:"variety"`
 	Meta                    map[string]interface{} `json:"meta"`
 
@@ -84,22 +84,69 @@ type OrderResponse struct {
 
 // Trade represents an individual trade response.
 type Trade struct {
-	AveragePrice      float64     `json:"average_price"`
-	Quantity          float64     `json:"quantity"`
-	TradeID           string      `json:"trade_id"`
-	Product           string      `json:"product"`
-	FillTimestamp     models.Time `json:"fill_timestamp"`
-	ExchangeTimestamp models.Time `json:"exchange_timestamp"`
-	ExchangeOrderID   string      `json:"exchange_order_id"`
-	OrderID           string      `json:"order_id"`
-	TransactionType   string      `json:"transaction_type"`
-	TradingSymbol     string      `json:"tradingsymbol"`
-	Exchange          string      `json:"exchange"`
-	InstrumentToken   uint32      `json:"instrument_token"`
+	AveragePrice      float64 `json:"average_price"`
+	Quantity          float64 `json:"quantity"`
+	TradeID           string  `json:"trade_id"`
+	Product           string  `json:"product"`
+	FillTimestamp     Time    `json:"fill_timestamp"`
+	ExchangeTimestamp Time    `json:"exchange_timestamp"`
+	ExchangeOrderID   string  `json:"exchange_order_id"`
+	OrderID           string  `json:"order_id"`
+	TransactionType   string  `json:"transaction_type"`
+	TradingSymbol     string  `json:"tradingsymbol"`
+	Exchange          string  `json:"exchange"`
+	InstrumentToken   uint32  `json:"instrument_token"`
 }
 
 // Trades is a list of trades.
 type Trades []Trade
+
+// ChargeOrderParams represents an individual charge order.
+type ChargeOrderParams struct {
+	AveragePrice    float64 `json:"average_price"`
+	Exchange        string  `json:"exchange"`
+	OrderID         string  `json:"order_id"`
+	OrderType       string  `json:"order_type"`
+	Product         string  `json:"product"`
+	Quantity        int     `json:"quantity"`
+	TradingSymbol   string  `json:"tradingsymbol"`
+	TransactionType string  `json:"transaction_type"`
+	Variety         string  `json:"variety"`
+}
+
+// ChargeOrders is a list of orders.
+type ChargeOrders []ChargeOrderParams
+
+type Charges struct {
+	TransactionTax         float64 `json:"transaction_tax"`
+	TransactionTaxType     string  `json:"transaction_tax_type"`
+	ExchangeTurnoverCharge float64 `json:"exchange_turnover_charge"`
+	SebiTurnoverCharge     float64 `json:"sebi_turnover_charge"`
+	Brokerage              float64 `json:"brokerage"`
+	StampDuty              float64 `json:"stamp_duty"`
+	Total                  float64 `json:"total"`
+	GST                    GST     `json:"gst"`
+}
+
+// ChargeOrderResponse -
+type ChargeOrderResponse struct {
+	TransactionType string  `json:"transaction_type"`
+	Tradingsymbol   string  `json:"tradingsymbol"`
+	Exchange        string  `json:"exchange"`
+	Variety         string  `json:"variety"`
+	Product         string  `json:"product"`
+	OrderType       string  `json:"order_type"`
+	Quantity        int     `json:"quantity"`
+	Price           float64 `json:"price"`
+	Charges         Charges `json:"charges"`
+}
+
+type GST struct {
+	Igst  float64 `json:"igst"`
+	Cgst  float64 `json:"cgst"`
+	Sgst  float64 `json:"sgst"`
+	Total float64 `json:"total"`
+}
 
 // GetOrders gets list of orders.
 func (c *Client) GetOrders() (Orders, error) {
@@ -134,6 +181,34 @@ func (c *Client) GetOrderTrades(OrderID string) ([]Trade, error) {
 	var orderTrades []Trade
 	err := c.doEnvelope(http.MethodGet, fmt.Sprintf(URIGetOrderTrades, OrderID), nil, nil, &orderTrades)
 	return orderTrades, err
+}
+
+// ChargeOrders - place a request for order charge
+func (c *Client) ChargeOrders(chargeOrderParams []ChargeOrderParams) ([]ChargeOrderResponse, error) {
+	var (
+		chargeOrderResponse []ChargeOrderResponse
+		// params              url.Values
+		err error
+	)
+
+	// if params, err = query.Values(chargeOrderParams); err != nil {
+	// 	return chargeOrderResponse, NewError(InputError, fmt.Sprintf("Error decoding order params: %v", err), nil)
+	// }
+
+	b, _ := json.Marshal(chargeOrderParams)
+
+	// str := `[{"order_id":"230714200050319","exchange":"NFO","tradingsymbol":"NIFTY2372019500CE","transaction_type":"BUY","variety":"regular","product":"MIS","order_type":"MARKET","quantity":50,"average_price":91},{"order_id":"230714200050321","exchange":"NFO","tradingsymbol":"BANKNIFTY2372044900CE","transaction_type":"BUY","variety":"regular","product":"MIS","order_type":"MARKET","quantity":25,"average_price":226},{"order_id":"230714200087703","exchange":"NFO","tradingsymbol":"NIFTY2372019500CE","transaction_type":"SELL","variety":"regular","product":"MIS","order_type":"LIMIT","quantity":50,"average_price":103.6},{"order_id":"230714200440856","exchange":"NFO","tradingsymbol":"BANKNIFTY2372044900CE","transaction_type":"SELL","variety":"regular","product":"MIS","order_type":"MARKET","quantity":25,"average_price":242.8},{"order_id":"230714200514192","exchange":"BFO","tradingsymbol":"SENSEX2371465600PE","transaction_type":"BUY","variety":"regular","product":"NRML","order_type":"LIMIT","quantity":10,"average_price":105.7},{"order_id":"230714200518968","exchange":"BFO","tradingsymbol":"SENSEX2371465600PE","transaction_type":"BUY","variety":"regular","product":"NRML","order_type":"LIMIT","quantity":10,"average_price":100},{"order_id":"230714200572772","exchange":"BFO","tradingsymbol":"SENSEX2371465600PE","transaction_type":"SELL","variety":"regular","product":"NRML","order_type":"LIMIT","quantity":20,"average_price":103}]`
+	// b = []byte(str)
+	headers := http.Header{}
+	headers.Add("content-type", "application/json")
+	resp, err := c.doRaw(http.MethodPost, URIPlaceCharges, b, headers)
+	err = readEnvelope(resp, &chargeOrderResponse)
+	if err != nil {
+		if _, ok := err.(Error); !ok {
+			fmt.Printf("Error parsing JSON response: %v", err)
+		}
+	}
+	return chargeOrderResponse, err
 }
 
 // PlaceOrder places an order.

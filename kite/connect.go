@@ -98,6 +98,7 @@ const (
 	URIUserMarginsSegment    string = "/user/margins/%s" // "/user/margins/{segment}"
 
 	URIGetOrders       string = "/orders"
+	URIPlaceCharges    string = "/oms/charges/orders"
 	URIGetOMSOrders    string = "/oms/orders"
 	URIGetTrades       string = "/trades"
 	URIGetOrderHistory string = "/orders/%s"        // "/orders/{order_id}"

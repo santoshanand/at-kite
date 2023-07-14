@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -194,4 +195,22 @@ func TestIssue64(t *testing.T) {
 	if !ord.ExchangeTimestamp.Equal(outOrd.ExchangeTimestamp.Time) {
 		t.Errorf("Incorrect timestamp parsing.\nwant:\t%v\ngot:\t%v", ord.ExchangeTimestamp, outOrd.ExchangeTimestamp)
 	}
+}
+
+func TestChargeOrder(t *testing.T) {
+	t.Parallel()
+	params := []ChargeOrderParams{{
+		AveragePrice:    91,
+		Exchange:        "NFO",
+		OrderID:         "230714200050319",
+		OrderType:       "MARKET",
+		Product:         "MIS",
+		Quantity:        50,
+		TradingSymbol:   "NIFTY2372019500CE",
+		TransactionType: "BUY",
+		Variety:         "regular",
+	}}
+	charges, err := getKite().ChargeOrders(params)
+	assert.Nil(t, err)
+	assert.NotNil(t, charges)
 }

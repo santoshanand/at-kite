@@ -3,8 +3,6 @@ package kite
 import (
 	"fmt"
 	"net/http"
-
-	"github.com/santoshanand/at-kite/models"
 )
 
 // UserSession represents the response after a successful authentication.
@@ -12,10 +10,10 @@ type UserSession struct {
 	UserProfile
 	UserSessionTokens
 
-	UserID      string      `json:"user_id"`
-	APIKey      string      `json:"api_key"`
-	PublicToken string      `json:"public_token"`
-	LoginTime   models.Time `json:"login_time"`
+	UserID      string `json:"user_id"`
+	APIKey      string `json:"api_key"`
+	PublicToken string `json:"public_token"`
+	LoginTime   Time   `json:"login_time"`
 }
 
 // UserSessionTokens represents response after renew access token.
